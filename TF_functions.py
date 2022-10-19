@@ -9,6 +9,8 @@ import matplotlib.image as mpimg
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import datetime
 import tensorflow_hub as hub
+import itertools
+from sklearn.metrics import confusion_matrix
 
 def view_random_image(target_dir,target_class):
   # Setup the target directory
@@ -67,7 +69,7 @@ def load_and_prep_image(filename, img_shape=224,scale=True):
   img = tf.image.resize(img,size=[img_shape,img_shape])
   # rescale the image (pixel values between 0 and 1)
 if scale:
-  return img = img/255.
+  return img/255.
 else:
   return img
 
