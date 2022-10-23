@@ -32,6 +32,7 @@ def load_and_prep_image(filename, img_shape=224, scale=True):
 # plot_confusion_matrix function - https://scikit-learn.org/stable/modules/generated/sklearn.metrics.plot_confusion_matrix.html
 import itertools
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
