@@ -16,3 +16,6 @@ The training accuracy is hovering around 50%, which could be:
 3. Reduce learning rate.
 
 Overall, using CNN to predict depth during motion is unpredictable. Gather better data: fixed x-y rotation angle or self-generated image data.
+
+* Check out this link ("https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/object_localization_and_detection") for more information
+* Check out this link for multi-object identification ("https://aman.ai/cs231n/detection/#multiple-object-detection")
