@@ -19,3 +19,10 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 
 * Check out this link ("https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/object_localization_and_detection") for more information
 * Check out this link for multi-object identification ("https://aman.ai/cs231n/detection/#multiple-object-detection")
+
+### For 10/31/2022 meeting:
+1. After using more and better data, the validation accuracy is approaching 90%.
+2. Incline nanowire looks like with tails when it is not focused at the center. Using the AF to track the inclination motion, and incline nanowires look like smaller wires.
+3. Figure out the deadline date.
+4. Iron out the outputs of CNNs. (check notebook)
+5. Research on more papers.
