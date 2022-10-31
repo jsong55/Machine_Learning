@@ -23,6 +23,6 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 ### For 10/31/2022 meeting:
 1. After using more and better data, the validation accuracy is approaching 90%.
 2. Incline nanowire looks like with tails when it is not focused at the center. Using the AF to track the inclination motion, and incline nanowires look like smaller wires.
-3. Figure out the deadline date.
+3. Figure out the deadline date. feb-1-2023
 4. Iron out the outputs of CNNs. (check notebook)
 5. Research on more papers.
