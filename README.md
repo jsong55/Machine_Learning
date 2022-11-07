@@ -26,3 +26,8 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 3. Figure out the deadline date. feb-1-2023
 4. Iron out the outputs of CNNs. (check notebook)
 5. Research on more papers.
+
+### For 11/7/2022 meeting:
+1. Several experiments were performed to very this: for a tilted wire, the height at the center of the wire has the largest sharpness value, and the histogram of the ROI has a normal distribution shape.
+2. The idea of using CNN to learn pose is: use CNN to find the height difference from one tip to its center, and use the projection length to find the angle.
+3. The center could be found through AF because it has the highest sharpness value, but how to find two tips.
