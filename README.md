@@ -31,3 +31,5 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 1. Several experiments were performed to very this: for a tilted wire, the height at the center of the wire has the largest sharpness value, and the histogram of the ROI has a normal distribution shape.
 2. The idea of using CNN to learn pose is: use CNN to find the height difference from one tip to its center, and use the projection length to find the angle.
 3. The center could be found through AF because it has the highest sharpness value, but how to find two tips.
+
+* Check out this link ("https://towardsdatascience.com/multi-label-image-classification-in-tensorflow-2-0-7d4cf8a4bc72") for multi-label classification, try the example experiments in TF.
