@@ -34,3 +34,6 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 
 * Check out this link ("https://towardsdatascience.com/multi-label-image-classification-in-tensorflow-2-0-7d4cf8a4bc72") for multi-label classification, try the example experiments in TF.
 * "https://github.com/ashrefm/multi-label-soft-f1/blob/master/Multi-Label%20Image%20Classification%20in%20TensorFlow%202.0.ipynb"
+
+### For 11/28/2022 meeting:
+1. 
