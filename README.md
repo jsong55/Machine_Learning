@@ -36,4 +36,22 @@ Overall, using CNN to predict depth during motion is unpredictable. Gather bette
 * "https://github.com/ashrefm/multi-label-soft-f1/blob/master/Multi-Label%20Image%20Classification%20in%20TensorFlow%202.0.ipynb"
 
 ### For 11/28/2022 meeting:
-1. 
+
+
+### Overfitting:
+The high variance of the model performance is an indicator of an overfitting problem. If the model trains for too long on the training data or is too complex, it learns the noise or irrelevant information within the dataset.
+
+### Underfitting:
+The model doesn't perform well for the training dataset.
+
+## Underfitting happens when:
+1. Unclean training data containing noise or outliers can be a reason for the model not being able to derive patterns from the dataset.
+2. The model has a high bias due to the inability to capture the relationship between the input examples and the target values. 
+3. The model is assumed to be too simple. For example, training a linear model in complex scenarios.
+
+### Solve the problem of overfitting by:
+1. Increasing the training data by data augmentation
+2. Feature selection by choosing the best features and remove the useless/unnecessary features
+3. Early stopping the training of deep learning models where the number of epochs is set high
+4. Dropout techniques by randomly selecting nodes and removing them from training
+5. Reducing the complexity of the model
