@@ -55,3 +55,5 @@ The model doesn't perform well for the training dataset.
 3. Early stopping the training of deep learning models where the number of epochs is set high
 4. Dropout techniques by randomly selecting nodes and removing them from training
 5. Reducing the complexity of the model
+
+### Check out this link for batch prediction: "https://gist.github.com/ritiek/5fa903f97eb6487794077cf3a10f4d3e"
