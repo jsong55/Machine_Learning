@@ -57,3 +57,4 @@ The model doesn't perform well for the training dataset.
 5. Reducing the complexity of the model
 
 ### Check out this link for batch prediction: "https://gist.github.com/ritiek/5fa903f97eb6487794077cf3a10f4d3e"
+and this link "https://www.tensorflow.org/tutorials/keras/classification"
