@@ -58,3 +58,5 @@ The model doesn't perform well for the training dataset.
 
 ### Check out this link for batch prediction: "https://gist.github.com/ritiek/5fa903f97eb6487794077cf3a10f4d3e"
 and this link "https://www.tensorflow.org/tutorials/keras/classification"
+
+# "https://zhuanlan.zhihu.com/p/465947475" for keras and TF versions.
