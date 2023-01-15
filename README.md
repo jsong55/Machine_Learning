@@ -60,3 +60,10 @@ The model doesn't perform well for the training dataset.
 and this link "https://www.tensorflow.org/tutorials/keras/classification"
 
 "https://zhuanlan.zhihu.com/p/465947475" for keras and TF versions.
+
+### 01/14/2023 Note:
+Check out this page to load TF model to LabView ("https://forums.ni.com/t5/LabVIEW/Latest-supported-version-of-Tensorflow/td-p/4032416")
+Freeze the model layers to free the version limitation ("https://blog.csdn.net/huangcong159/article/details/106882311")
+--Try to use the lastest version of TF to create a model and freeze layers
+--Downgrade the LabView Vision module
+--Check the old program
