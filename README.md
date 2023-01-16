@@ -70,4 +70,4 @@ Freeze the model layers to free the version limitation ("https://blog.csdn.net/h
 
 ### 01/15/2023 Note:
 1. The Vision development module 2021 doesn't have license, ask Ethan
-2. -Vision acquisition software 2021 needs lincense, too
+2. Vision acquisition software 2021 needs lincense, too
