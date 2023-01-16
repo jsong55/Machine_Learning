@@ -64,10 +64,10 @@ and this link "https://www.tensorflow.org/tutorials/keras/classification"
 ### 01/14/2023 Note:
 Check out this page to load TF model to LabView ("https://forums.ni.com/t5/LabVIEW/Latest-supported-version-of-Tensorflow/td-p/4032416")
 Freeze the model layers to free the version limitation ("https://blog.csdn.net/huangcong159/article/details/106882311")
-#--Try to use the lastest version of TF to create a model and freeze layers
-#--Downgrade the LabView Vision module
-#--Check the old program
+1. Try to use the lastest version of TF to create a model and freeze layers
+2. Downgrade the LabView Vision module
+3. Check the old program
 
 ### 01/15/2023 Note:
-#-The Vision development module 2021 doesn't have license, ask Ethan
-#-Vision acquisition software 2021 needs lincense, too
+1. The Vision development module 2021 doesn't have license, ask Ethan
+2. -Vision acquisition software 2021 needs lincense, too
