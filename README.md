@@ -71,3 +71,7 @@ Freeze the model layers to free the version limitation ("https://blog.csdn.net/h
 ### 01/15/2023 Note:
 1. The Vision development module 2021 doesn't have license, ask Ethan
 2. Vision acquisition software 2021 needs lincense, too
+
+### 01/19/2023 Note
+1. Double check the due date for TASE
+2. Use this paper to create TF 1.14 ('https://medium.com/@sebastingarcaacosta/how-to-export-a-tensorflow-2-x-keras-model-to-a-frozen-and-optimized-graph-39740846d9eb)
