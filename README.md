@@ -56,10 +56,9 @@ The model doesn't perform well for the training dataset.
 4. Dropout techniques by randomly selecting nodes and removing them from training
 5. Reducing the complexity of the model
 
-### Check out this link for batch prediction: "https://gist.github.com/ritiek/5fa903f97eb6487794077cf3a10f4d3e"
-and this link "https://www.tensorflow.org/tutorials/keras/classification"
-
-"https://zhuanlan.zhihu.com/p/465947475" for keras and TF versions.
+1. Check out this link for batch prediction: "https://gist.github.com/ritiek/5fa903f97eb6487794077cf3a10f4d3e"
+2. and this link "https://www.tensorflow.org/tutorials/keras/classification"
+3. "https://zhuanlan.zhihu.com/p/465947475" for keras and TF versions.
 
 ### 01/14/2023 Note:
 Check out this page to load TF model to LabView ("https://forums.ni.com/t5/LabVIEW/Latest-supported-version-of-Tensorflow/td-p/4032416")
@@ -72,6 +71,10 @@ Freeze the model layers to free the version limitation ("https://blog.csdn.net/h
 1. The Vision development module 2021 doesn't have license, ask Ethan
 2. Vision acquisition software 2021 needs lincense, too
 
-### 01/19/2023 Note
+### 01/19/2023 Note:
 1. Double check the due date for TASE
 2. Use this paper to create TF 1.14 ('https://medium.com/@sebastingarcaacosta/how-to-export-a-tensorflow-2-x-keras-model-to-a-frozen-and-optimized-graph-39740846d9eb)
+
+### 01/24/2023 Note:
+1. Does this work for freeze tf 1.x graph? ('https://leimao.github.io/blog/Save-Load-Inference-From-TF-Frozen-Graph/')
+2. Freeze and load tf 2.x model? ('https://leimao.github.io/blog/Save-Load-Inference-From-TF2-Frozen-Graph/')
