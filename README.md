@@ -78,3 +78,4 @@ Freeze the model layers to free the version limitation ("https://blog.csdn.net/h
 ### 01/24/2023 Note:
 1. Does this work for freeze tf 1.x graph? ('https://leimao.github.io/blog/Save-Load-Inference-From-TF-Frozen-Graph/')
 2. Freeze and load tf 2.x model? ('https://leimao.github.io/blog/Save-Load-Inference-From-TF2-Frozen-Graph/')
+3. Freeze graph for 1.14? ('https://stackoverflow.com/questions/45466020/how-to-export-keras-h5-to-tensorflow-pb')
