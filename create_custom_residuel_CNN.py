@@ -5,7 +5,7 @@ from keras.regularizers import l2
 from keras.models import Model
 from keras.layers import Dense, MaxPooling2D, Conv2D, Flatten,\
     BatchNormalization, Activation, GlobalAveragePooling2D, \
-    Dropout, ReLU, Concatenate, Input, Add
+    Dropout, ReLU, Concatenate, Input, Add, GlobalMaxPooling2D
 
 from keras.callbacks import ModelCheckpoint
 from keras import backend as K
@@ -68,7 +68,7 @@ class NetworkModel:
     b3_out = BatchNormalization(epsilon=1e-3,momentum=0.999,name='b3_out')(b3_relu_2)   
 
     '''block 4'''
-    b4_avg_p = GlobalAveragePooling2D()(b3_out)
+    b4_avg_p = GlobalMaxPooling2D()(b3_out)
     output = Dense(output_shape,name='model_output',activation='softmax',
                    kernel_initializer='he_uniform')(b4_avg_p)
 
