@@ -69,9 +69,8 @@ class NetworkModel:
 
     '''block 4'''
     b4_avg_p = GlobalAveragePooling2D()(b3_out)
-    drop_out = Dropout(0.2)(b4_avg_p)
     output = Dense(output_shape,name='model_output',activation='softmax',
-                   kernel_initializer='he_uniform')(drop_out)
+                   kernel_initializer='he_uniform')(b4_avg_p)
 
     model = Model(input,output)
     model_json = model.to_json()
