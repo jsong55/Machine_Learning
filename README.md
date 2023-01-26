@@ -80,3 +80,6 @@ Freeze the model layers to free the version limitation ("https://blog.csdn.net/h
 2. Freeze and load tf 2.x model? ('https://leimao.github.io/blog/Save-Load-Inference-From-TF2-Frozen-Graph/')
 3. Freeze graph for 1.14? ('https://stackoverflow.com/questions/45466020/how-to-export-keras-h5-to-tensorflow-pb')
 4. Custom a CNN model: ('https://cnvrg.io/cnn-tensorflow/')
+
+### 01/26/2023 Note:
+1. Custom create residual network: ('https://github.com/aliprf/tutorials_1_residual_network')
