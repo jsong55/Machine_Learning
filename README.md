@@ -1,3 +1,14 @@
+# To install TF 1.14 with gpu:
+1. https://zhuanlan.zhihu.com/p/37086409
+2. https://blog.csdn.net/XunCiy/article/details/89070315
+
+error: https://github.com/tensorflow/tensorflow/issues/31701
+
+download links:
+1. https://developer.nvidia.com/cuda-10.0-download-archive?target_os=Windows&target_arch=x86_64&target_version=10&target_type=exenetwork
+2. https://developer.nvidia.com/rdp/cudnn-archive
+
+
 # Nanowire AF Project
 
 This repository is used to store google colab codes to create ML models to achieve auto-focus and pose estimation for nanowires.
