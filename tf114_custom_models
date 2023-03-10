@@ -1,0 +1,401 @@
+import tensorflow as tf
+tf.enable_eager_execution()
+print(tf.__version__)
+
+from keras.preprocessing.image import ImageDataGenerator
+import keras
+from tensorflow.keras.layers import Dense, MaxPooling2D, Conv2D, Flatten,\
+    BatchNormalization, Activation, GlobalAveragePooling2D, \
+    Dropout, ReLU, Concatenate, Input, Add, GlobalMaxPooling2D, MaxPool2D
+from keras.models import Model
+from tensorflow.keras.regularizers import l2, l1, l1_l2
+import numpy as np
+
+def plot_loss_curves(history):
+    import matplotlib.pyplot as plt
+
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    accuracy = history.history['acc']
+    val_accuracy = history.history['val_acc']
+
+    epochs = range(len(history.history['loss']))
+
+    # Plot loss
+    plt.plot(epochs, loss, label='training_loss')
+    plt.plot(epochs, val_loss, label='val_loss')
+    plt.title('Loss')
+    plt.xlabel('Epochs')
+    plt.legend()
+
+    # Plot accuracy
+    plt.figure()
+    plt.plot(epochs, accuracy, label='training_accuracy')
+    plt.plot(epochs, val_accuracy, label='val_accuracy')
+    plt.title('Accuracy')
+    plt.xlabel('Epochs')
+    plt.legend();
+    
+def make_confusion_matrix(y_true, y_pred, classes=None, figsize=(10, 10), text_size=15, norm=False, savefig=False): 
+  # Create the confustion matrix
+  cm = confusion_matrix(y_true, y_pred)
+  cm_norm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis] # normalize it
+  n_classes = cm.shape[0] # find the number of classes we're dealing with
+
+  # Plot the figure and make it pretty
+  fig, ax = plt.subplots(figsize=figsize)
+  cax = ax.matshow(cm, cmap=plt.cm.Blues) # colors will represent how 'correct' a class is, darker == better
+  fig.colorbar(cax)
+
+  # Are there a list of classes?
+  if classes:
+    labels = classes
+  else:
+    labels = np.arange(cm.shape[0])
+  
+  # Label the axes
+  ax.set(title="Confusion Matrix",
+         xlabel="Predicted label",
+         ylabel="True label",
+         xticks=np.arange(n_classes), # create enough axis slots for each class
+         yticks=np.arange(n_classes), 
+         xticklabels=labels, # axes will labeled with class names (if they exist) or ints
+         yticklabels=labels)
+  
+  # Make x-axis labels appear on bottom
+  ax.xaxis.set_label_position("bottom")
+  ax.xaxis.tick_bottom()
+
+  # Set the threshold for different colors
+  threshold = (cm.max() + cm.min()) / 2.
+
+  # Plot the text on each cell
+  for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    if norm:
+      plt.text(j, i, f"{cm[i, j]} ({cm_norm[i, j]*100:.1f}%)",
+              horizontalalignment="center",
+              color="white" if cm[i, j] > threshold else "black",
+              size=text_size)
+    else:
+      plt.text(j, i, f"{cm[i, j]}",
+              horizontalalignment="center",
+              color="white" if cm[i, j] > threshold else "black",
+              size=text_size)
+
+  # Save the figure to the current working directory
+  if savefig:
+    fig.savefig("confusion_matrix.png")
+
+train_gen = ImageDataGenerator()
+val_gen = ImageDataGenerator()
+test_gen = ImageDataGenerator()
+train_data = train_gen.flow_from_directory(directory='G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\train',
+                                                                    target_size=(150,150),color_mode='grayscale',batch_size=32,class_mode='categorical',
+                                                                   shuffle=True)
+
+val_data = train_gen.flow_from_directory(directory='G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\validation',
+                                                                    target_size=(150,150),color_mode='grayscale',batch_size=32,class_mode='categorical',
+                                                                   shuffle=True)
+
+test_data = test_gen.flow_from_directory(directory='G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\test',
+                                                                    target_size=(150,150),color_mode='grayscale',batch_size=32,class_mode='categorical',
+                                                                    shuffle=False)
+
+
+datagen_augmentor = ImageDataGenerator(horizontal_flip=True,
+                                       vertical_flip=True,)
+#                                     horizontal_flip=True,
+#                                       vertical_flip=True,
+#                                      zoom_range = 0.1
+#                                        height_shift_range = 0.5)
+#                                        rescale=1/255.)
+
+
+train_data_augmented = datagen_augmentor.flow_from_directory('G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\train',
+                                                               target_size = (150,150),
+                                                               batch_size = 64,
+                                                               class_mode='categorical',
+                                                               color_mode = 'grayscale',
+                                                               shuffle= True)
+
+test_data_augmented = datagen_augmentor.flow_from_directory('G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\test',
+                                                                target_size = (150,150),
+                                                                batch_size = 64,
+                                                                class_mode = 'categorical',
+                                                                color_mode = 'grayscale',
+                                                                shuffle = False)
+
+val_data_augmented = datagen_augmentor.flow_from_directory('G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40nw_lower_length_adj_5invs\\validation',
+                                                                target_size = (150,150),
+                                                                batch_size = 64,
+                                                                class_mode = 'categorical',
+                                                                color_mode = 'grayscale',
+                                                                shuffle = True)
+
+input_shape = [150,150,1] 
+output_shape = 5
+
+my_alexnet_in_sequential= tf.keras.Sequential([
+
+    Conv2D(8,(3,3),activation='relu',input_shape=(150,150,3)),
+    MaxPooling2D(pool_size=(3,3),strides=2),
+    Conv2D(16,(3,3),activation='relu'),
+    MaxPooling2D(pool_size=(2,2),strides=2),
+    Conv2D(32,kernel_size=(3,3),strides=1,name='conv2',activation='relu'),
+    MaxPooling2D(pool_size=(3,3),strides=2,name='maxpool2'),
+    Conv2D(64,kernel_size=(3,3),name='conv3',activation='relu'),
+    MaxPooling2D(pool_size=(3,3),strides=2,name='maxpool3'),
+    Conv2D(128,kernel_size=(3,3),name='conv4',activation='relu'),
+    MaxPooling2D(pool_size=(3,3),strides=2,name='maxpool4'),
+    Flatten(),
+    Dense(100,activation='relu'),
+    Dropout(0.05,name='drop_out1'),
+    Dense(output_shape,activation='softmax')
+])
+
+my_alexnet.compile(loss='categorical_crossentropy',metrics=["accuracy"],optimizer = tf.keras.optimizers.Adam(learning_rate=0.001))
+
+################################# GPT Model ##################################
+GPT_model = tf.keras.models.Sequential([
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(150, 150, 1)),
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(7, activation='softmax')
+])
+
+GPT_model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+                        loss='categorical_crossentropy',
+                        metrics=['accuracy'])
+
+####################################### Angle Net ##################################
+input_shape = [150,150,1] 
+angle_shape = 5
+
+angle_input = tf.keras.Input(shape=input_shape,name='input')
+conv1 = Conv2D(4,kernel_size=(3,3),strides=1,name='conv1',activation='relu')(angle_input)
+batchnorm1 = BatchNormalization(name='batchnorm1')(conv1)
+maxpool1 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool1')(batchnorm1)
+conv2 = Conv2D(8,kernel_size=(3,3),strides=1,name='conv2',activation='relu')(maxpool1)
+batchnorm2 = BatchNormalization(name='batchnorm2')(conv2)
+maxpool2 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool2')(batchnorm2)
+conv3 = Conv2D(16,kernel_size=(3,3),strides=1,name='conv3',activation='relu')(maxpool2)
+batchnorm3 = BatchNormalization(name='batchnorm3')(conv3)
+maxpool3 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool3')(batchnorm3)
+conv4 = Conv2D(32,kernel_size=(3,3),strides=1,name='conv4',activation='relu')(maxpool3)
+# batchnorm4 = BatchNormalization(name='batchnorm4')(conv4)
+maxpool4 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool4')(conv4)
+conv5 = Conv2D(64,kernel_size=(3,3),name='conv5',activation='relu')(maxpool4)
+maxpool5 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool5')(conv5)
+flat1 = Flatten(name='flat1')(maxpool5)
+dense1 =Dense(50,activation='relu',kernel_regularizer=l1_l2(l1=0.005,l2=0.005))(flat1)
+drop_out1 = Dropout(0.4,name='drop_out1')(dense1)
+angle_output = Dense(angle_shape,name='model_output',activation='softmax')(drop_out1)
+
+my_Angle_net = tf.keras.Model(inputs=angle_input, outputs=angle_output)
+
+my_Angle_net.compile(loss='categorical_crossentropy',metrics=["accuracy"],
+                     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001))
+###############################################################################
+my_Angle_net.summary()    
+
+#################################### AF Net ##################################
+input_shape = [150,150,1] 
+Af_output_shape = 5
+
+AF_input = tf.keras.Input(shape=input_shape,name='input')
+conv1 = Conv2D(16,kernel_size=(3,3),strides=1,name='conv1',activation='relu')(AF_input)
+maxpool1 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool1')(conv1)
+conv2 = Conv2D(32,kernel_size=(3,3),strides=1,name='conv2',activation='relu')(maxpool1)
+maxpool2 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool2')(conv2)
+conv3 = Conv2D(64,kernel_size=(3,3),name='conv3',activation='relu')(maxpool2)
+maxpool3 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool3')(conv3)
+conv4 = Conv2D(128,kernel_size=(3,3),name='conv4',activation='relu')(maxpool3)
+maxpool4 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool4')(conv4)
+conv5 = Conv2D(256,kernel_size=(3,3),name='conv5',activation='relu')(maxpool4)
+maxpool5 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool5')(conv5)
+flat1 = Flatten(name='flat1')(maxpool5)
+dense1 =Dense(300,activation='relu')(flat1)
+drop_out1 = Dropout(0.2,name='drop_out1')(dense1)
+AF_output = Dense(Af_output_shape,name='model_output',activation='softmax')(drop_out1)
+
+my_AF_net = tf.keras.Model(inputs=AF_input, outputs=AF_output)
+
+my_AF_net.compile(loss='categorical_crossentropy',metrics=["accuracy"],
+                     optimizer = tf.keras.optimizers.Adam(learning_rate=0.001))
+my_AF_net.summary()
+
+
+def lr_scheduler(epoch):
+    if epoch < 10:
+        return 0.001
+    elif epoch < 15:
+        return 0.001
+    elif epoch < 20:
+        return 0.0009
+    else:
+        return 0.0008
+lr_callback = tf.keras.callbacks.LearningRateScheduler(lr_scheduler)
+
+custom_model_history = my_Angle_net.fit(train_data_augmented,
+               epochs=10,
+               validation_data = val_data,
+               callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_acc',patience=10),lr_callback])
+
+plot_loss_curves(custom_model_history)
+my_AF_net.evaluate(test_data)
+
+##########################################################################
+image_input = tf.keras.Input(shape=input_shape,name='input')
+
+conv1 = Conv2D(16,kernel_size=(3,3),strides=1,name='conv1',activation='relu')(image_input)
+maxpool1 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool1')(conv1)
+custom_padded_1 = tf.pad(maxpool1, ((0, 0), (2, 0), (2, 0), (0, 0)))
+
+conv2 = Conv2D(32,kernel_size=(3,3),strides=1,name='conv2',activation='relu')(custom_padded_1)
+maxpool2 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool2')(conv2)
+custom_padded_2 = tf.pad(maxpool2, ((0, 0), (1, 0), (1, 0), (0, 0)))
+
+conv3 = Conv2D(64,kernel_size=(3,3),name='conv3',activation='relu')(custom_padded_2)
+maxpool3 = MaxPool2D(pool_size=(3,3),strides=2,name='maxpool3')(conv3)
+custom_padded_3 = tf.pad(maxpool3, ((0, 0), (1, 0), (1, 0), (0, 0)))
+
+conv4 = Conv2D(128,kernel_size=(3,3),name='conv4',activation='relu')(custom_padded_3)
+maxpool4 = MaxPool2D(pool_size=(3,3),strides=1,name='maxpool4')(conv4)
+custom_padded_4 = tf.pad(maxpool4, ((0, 0), (1, 0), (1, 0), (0, 0)))
+
+conv5 = Conv2D(256,kernel_size=(3,3),name='conv5',activation='relu')(custom_padded_4)
+maxpool5 = MaxPool2D(pool_size=(3,3),strides=1,name='maxpool5')(conv5)
+custom_padded_5 = tf.pad(maxpool5, ((0, 0), (1, 0), (1, 0), (0, 0)))
+
+conv6 = Conv2D(512,kernel_size=(3,3),name='conv6',activation='relu')(custom_padded_5)
+maxpool6 = MaxPool2D(pool_size=(3,3),strides=1,name='maxpool6')(conv6)
+
+flat1 = Flatten(name='flat1')(maxpool6)
+drop_out1 = Dropout(0.2,name='drop_out1')(flat1)
+output = Dense(output_shape,name='model_output',activation='softmax')(drop_out1)
+
+my_alexnet = tf.keras.Model(inputs=image_input, outputs=output)
+################################################################################
+
+output_shape = 9
+mobilenet_v2 = tf.keras.applications.MobileNetV2(include_top=False, input_shape=(150, 150, 1))
+
+# Freeze the layers
+mobilenet_v2.trainable = True
+
+# Build the model
+model = tf.keras.models.Sequential([
+    mobilenet_v2,
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(200, activation='relu'),
+    tf.keras.layers.Dense(output_shape, activation='softmax')
+])
+
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# #############################################################################
+
+output_shape = 7
+custom_model = tf.keras.Sequential([
+    
+    Conv2D(4,10,activation='relu',input_shape=(150,150,3)),
+    BatchNormalization(),
+    MaxPool2D(pool_size=(3,3),strides=2,name='max1'),
+    Conv2D(8,(3,3),activation="relu",name='conv2'),
+    BatchNormalization(name='b2'),
+    MaxPool2D(pool_size=(3,3),strides=2,name='max2'),
+    Conv2D(16,(3,3),activation="relu",name='conv3'),
+    BatchNormalization(name='b3'),
+    MaxPool2D(pool_size=(3,3),strides=2,name='max3'),
+    Flatten(name='flat1'),
+    Dense(200,activation="relu",name='dense1'),
+    Dropout(0.2,name='drop_out'),
+    Dense(output_shape,name='model_output',activation='softmax')
+
+])
+custom_model.summary()
+custom_model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+def lr_scheduler(epoch):
+    if epoch < 5:
+        return 0.001
+    elif epoch < 10:
+        return 0.0009
+    elif epoch < 15:
+        return 0.0008
+    else:
+        return 0.0007
+lr_callback = tf.keras.callbacks.LearningRateScheduler(lr_scheduler)
+
+custom_model_history = my_Angle_net.fit(train_data_augmented,
+               epochs=50,
+               validation_data = val_data_augmented,
+               callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_acc',patience=9),lr_callback])
+
+
+plot_loss_curves(custom_model_history)
+my_Angle_net.evaluate(test_data)
+
+############ Free and Save Model ###################
+full_model = tf.function(lambda x: my_Angle_net(x))
+
+full_model = full_model.get_concrete_function(
+
+    tf.TensorSpec(my_alexnet.inputs[0].shape, my_Angle_net.inputs[0].dtype))
+
+from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
+
+# Get frozen ConcreteFunction
+
+frozen_func = convert_variables_to_constants_v2(full_model)
+
+frozen_func.graph.as_graph_def()
+
+# Save frozen graph from frozen ConcreteFunction to hard drive
+pathPB = 'G:/Jiaxu Song/pitch_angle_id_data/150x150x1'
+namePB = 'ang_id_6invs_94%_acc.pb'
+tf.io.write_graph(graph_or_graph_def=frozen_func.graph, logdir = pathPB, name = namePB, as_text = False)
+
+
+############## Create Confusion Matrix ####################
+predictions = my_AF_net.predict(test_data)
+predicted_labels = np.argmax(predictions,axis=1)
+
+import os
+
+data_dir = 'G:\\Jiaxu Song\\test_for_depth_image_data\\depth_identification\\150x150x1_imgs\\depth_id_40_nw_lower\\test'
+classes = os.listdir(data_dir)
+class_to_index = {classes[i]: i for i in range(len(classes))}
+
+filenames = []
+labels = []
+for class_name in classes:
+    class_dir = os.path.join(data_dir, class_name)
+    for filename in os.listdir(class_dir):
+        filenames.append(os.path.join(class_dir, filename))
+        labels.append(class_to_index[class_name])
+
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import itertools
+class_name = ['0um','1um','2um','3um','4um','5um','6um','7um','8um']
+# class_name = ['0','30','45','60','75','90']
+# class_name = ['0-35','36-50','51-65','66-80','81-90']
+# class_name = ['0-20','21-35','36-50','51-65','66-80','81-90']
+# class_name = ['0-20','21-50','51-65','66-80','81-90']
+cm = confusion_matrix(labels, predicted_labels)
+make_confusion_matrix(y_true=labels, 
+                y_pred=predicted_labels,
+                classes = class_name,
+                figsize=(10, 10),
+                text_size=8)
